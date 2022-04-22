@@ -52,10 +52,14 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Create Python virtual env
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+
       - name: Install dependencies for the tests script
         run: |
-          # Install globally so that we can run 'pytest' with 'sudo'
-          sudo pip install -r tests/requirements.txt
+          pip install -r tests/requirements.txt
 
       - name: Run configure script
         run: |
