@@ -18,9 +18,16 @@ jobs:
         include:
           - os: ubuntu-20.04
             capture_interface: eth0
+            make: make
           - os: macos-11
             capture_interface: en0
+            make: gmake
     steps:
+      - name: Create Python virtual env
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+
       - name: Install Ubuntu dependencies
         if: matrix.os == 'ubuntu-20.04'
         run: |
@@ -52,14 +59,9 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
-      - name: Create Python virtual env
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-
       - name: Install dependencies for the tests script
         run: |
-          pip install -r tests/requirements.txt
+          pip3 install -r tests/requirements.txt
 
       - name: Run configure script
         run: |
@@ -69,15 +71,15 @@ jobs:
 
       - name: Build the Chrome version of curl-impersonate
         run: |
-          make chrome-build
-          make chrome-checkbuild
-          make chrome-install
+          ${{ matrix.make }} chrome-build
+          ${{ matrix.make }} chrome-checkbuild
+          ${{ matrix.make }} chrome-install
 
       - name: Build the Firefox version of curl-impersonate
         run: |
-          make firefox-build
-          make firefox-checkbuild
-          make firefox-install
+          ${{ matrix.make }} firefox-build
+          ${{ matrix.make }} firefox-checkbuild
+          ${{ matrix.make }} firefox-install
     
       - name: Prepare the tests
         run: |
