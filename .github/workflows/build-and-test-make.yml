@@ -90,4 +90,4 @@ jobs:
         run: |
           cd tests
           # sudo is needed for capturing packets
-          sudo ./venv/bin/pytest . --log-cli-level DEBUG --install-dir ${{ runner.temp}}/install --capture-interface ${{ matrix.capture_interface }}
+          sudo ../venv/bin/pytest . --log-cli-level DEBUG --install-dir ${{ runner.temp}}/install --capture-interface ${{ matrix.capture_interface }}
