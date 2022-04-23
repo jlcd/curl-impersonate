@@ -87,5 +87,5 @@ jobs:
         run: |
           cd tests
           # sudo is needed for capturing packets
-          # '-E' for preserving $PATH
-          sudo -E python3 -m pytest . --log-cli-level DEBUG --install-dir ${{ runner.temp}}/install --capture-interface ${{ matrix.capture_interface }}
+          python_bin=$(which python3)
+          sudo $python_bin -m pytest . --log-cli-level DEBUG --install-dir ${{ runner.temp}}/install --capture-interface ${{ matrix.capture_interface }}
