@@ -1,6 +1,7 @@
 import os
 import io
 import re
+import sys
 import logging
 import subprocess
 import tempfile
@@ -255,6 +256,12 @@ class TestImpersonation:
         p.terminate()
         p.wait(timeout=10)
 
+    def _set_ld_preload(self, env_vars, lib):
+        if sys.platform.startswith("linux"):
+            env_vars["LD_PRELOAD"] = lib
+        elif sys.platform.startswith("darwin"):
+            env_vars["DYLD_INSERT_LIBRARIES"] = lib
+
     def _run_curl(self, curl_binary, env_vars, extra_args, url,
                   output="/dev/null"):
         env = os.environ.copy()
@@ -368,9 +375,9 @@ class TestImpersonation:
             pytestconfig.getoption("install_dir"), "bin", curl_binary
         )
         if ld_preload:
-            env_vars["LD_PRELOAD"] = os.path.join(
+            self._set_ld_preload(env_vars, os.path.join(
                 pytestconfig.getoption("install_dir"), "lib", ld_preload
-            )
+            ))
 
         ret = self._run_curl(curl_binary,
                              env_vars=env_vars,
@@ -425,9 +432,9 @@ class TestImpersonation:
             pytestconfig.getoption("install_dir"), "bin", curl_binary
         )
         if ld_preload:
-            env_vars["LD_PRELOAD"] = os.path.join(
+            self._set_ld_preload(env_vars, os.path.join(
                 pytestconfig.getoption("install_dir"), "lib", ld_preload
-            )
+            ))
         ret = self._run_curl(curl_binary,
                              env_vars=env_vars,
                              extra_args=["-k"],
@@ -481,9 +488,9 @@ class TestImpersonation:
             pytestconfig.getoption("install_dir"), "bin", curl_binary
         )
         if ld_preload:
-            env_vars["LD_PRELOAD"] = os.path.join(
+            self._set_ld_preload(env_vars, os.path.join(
                 pytestconfig.getoption("install_dir"), "lib", ld_preload
-            )
+            ))
 
         output = tempfile.mkstemp()[1]
         ret = self._run_curl(curl_binary,
