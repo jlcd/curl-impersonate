@@ -25,11 +25,6 @@ jobs:
     steps:
       - uses: actions/setup-python@v3
 
-      - name: Create Python virtual env
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-
       - name: Install Ubuntu dependencies
         if: matrix.os == 'ubuntu-20.04'
         run: |
@@ -92,4 +87,5 @@ jobs:
         run: |
           cd tests
           # sudo is needed for capturing packets
-          sudo ../venv/bin/pytest . --log-cli-level DEBUG --install-dir ${{ runner.temp}}/install --capture-interface ${{ matrix.capture_interface }}
+          # '-E' for preserving $PATH
+          sudo -E python3 -m pytest . --log-cli-level DEBUG --install-dir ${{ runner.temp}}/install --capture-interface ${{ matrix.capture_interface }}
