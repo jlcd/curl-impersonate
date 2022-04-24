@@ -375,6 +375,12 @@ class TestImpersonation:
             pytestconfig.getoption("install_dir"), "bin", curl_binary
         )
         if ld_preload:
+            # Injecting libcurl-impersonate with LD_PRELOAD is supported on
+            # Linux only. On Mac there is DYLD_INSERT_LIBRARIES but it
+            # reuqires more work to be functional.
+            if not sys.platform.startswith("linux"):
+                pytest.skip()
+
             self._set_ld_preload(env_vars, os.path.join(
                 pytestconfig.getoption("install_dir"), "lib", ld_preload
             ))
@@ -432,9 +438,16 @@ class TestImpersonation:
             pytestconfig.getoption("install_dir"), "bin", curl_binary
         )
         if ld_preload:
+            # Injecting libcurl-impersonate with LD_PRELOAD is supported on
+            # Linux only. On Mac there is DYLD_INSERT_LIBRARIES but it
+            # reuqires more work to be functional.
+            if not sys.platform.startswith("linux"):
+                pytest.skip()
+
             self._set_ld_preload(env_vars, os.path.join(
                 pytestconfig.getoption("install_dir"), "lib", ld_preload
             ))
+
         ret = self._run_curl(curl_binary,
                              env_vars=env_vars,
                              extra_args=["-k"],
@@ -488,6 +501,12 @@ class TestImpersonation:
             pytestconfig.getoption("install_dir"), "bin", curl_binary
         )
         if ld_preload:
+            # Injecting libcurl-impersonate with LD_PRELOAD is supported on
+            # Linux only. On Mac there is DYLD_INSERT_LIBRARIES but it
+            # reuqires more work to be functional.
+            if not sys.platform.startswith("linux"):
+                pytest.skip()
+
             self._set_ld_preload(env_vars, os.path.join(
                 pytestconfig.getoption("install_dir"), "lib", ld_preload
             ))
